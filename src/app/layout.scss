@@ -1,0 +1,32 @@
+#root,
+.app {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.main-layout {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 0 auto;
+  grid-template-rows: 4rem auto;
+
+  &__header {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 1;
+    background: linear-gradient(to right, #093666, #0c498a);
+  }
+  &__container {
+    grid-column: 2 / span 1;
+    grid-row: 2 / span 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: calc(100vh - 4rem);
+
+    .content-width {
+      width: 90%;
+      max-width: 1100px;
+    }
+  }
+}

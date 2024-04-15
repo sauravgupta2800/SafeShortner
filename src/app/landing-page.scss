@@ -1,0 +1,31 @@
+.home {
+  &__info {
+    padding-top: 60px;
+    width: 80%;
+    margin: auto;
+    &__title {
+      font-weight: 800;
+      font-size: 70px;
+      background: linear-gradient(90deg, #093666, #25b3e2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &__subtitle {
+      font-size: 1.5rem;
+      .markHighlight {
+        background: linear-gradient(
+          0deg,
+          hsla(243, 28%, 44%, 0.4),
+          transparent 50%
+        );
+      }
+    }
+  }
+}
+
+.reviewcard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Inter, system-ui, sans-serif;
+}
