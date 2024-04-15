@@ -249,7 +249,9 @@ export default function CollapseRow() {
                   <div className="checkformtitle">Select the Timezone</div>
                   <div className="w-96 mt-1">
                     <NewSelect
-                      menuPortalTarget={document.body}
+                      menuPortalTarget={
+                        typeof window !== "undefined" ? document.body : null
+                      }
                       value={expireTimezone}
                       options={getTimezones()}
                       placeholder="Select Timezone..."
@@ -286,7 +288,9 @@ export default function CollapseRow() {
                 <div className="checkformtitle">Blacklisted Countries</div>
 
                 <NewSelect
-                  menuPortalTarget={document.body}
+                  menuPortalTarget={
+                    typeof window !== "undefined" ? document.body : null
+                  }
                   isMulti
                   value={blockedCountries}
                   options={getCountries()}

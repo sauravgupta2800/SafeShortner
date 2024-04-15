@@ -73,6 +73,7 @@ const TextCaptcha = ({ onVerify }: any) => {
         );
       }, 250);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [render]);
 
   const handleSubmit = () => {
