@@ -144,5 +144,4 @@ const CellCaptcha = ({ onVerify }: any) => {
     </div>
   );
 };
-
-export { TextCaptcha, CellCaptcha };
+export default TextCaptcha;
