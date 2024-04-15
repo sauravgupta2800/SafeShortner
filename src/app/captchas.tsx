@@ -2,7 +2,8 @@
 import "./landing-page.scss";
 import { useState, useEffect, useLayoutEffect } from "react";
 import { Button, Input, useToast } from "@chakra-ui/react";
-import FaCaptcha from "FaCaptcha";
+// import FaCaptcha from "FaCaptcha";
+import FaCaptcha from "facaptcha";
 
 const ExampleImages: any = [
   {
@@ -144,4 +145,5 @@ const CellCaptcha = ({ onVerify }: any) => {
     </div>
   );
 };
-export default TextCaptcha;
+
+export { TextCaptcha, CellCaptcha };
