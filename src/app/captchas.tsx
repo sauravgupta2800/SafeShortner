@@ -1,12 +1,49 @@
 "use client";
 import "./landing-page.scss";
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { Button, Input, useToast } from "@chakra-ui/react";
-// import { StarIcon, ArrowRightIcon } from "@chakra-ui/icons";
-// import { experiences } from "./config";
-// import { error } from "console";
+import FaCaptcha from "FaCaptcha";
 
-const TextCaptcha = () => {
+const ExampleImages: any = [
+  {
+    url: "https://images.rawpixel.com/image_1000/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvam9iNjc5LTA0NS14LmpwZw.jpg",
+    topics: ["Dog"],
+  },
+  {
+    url: "https://images.rawpixel.com/image_1000/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjEtNTEtMDItcm9iLmpwZw.jpg",
+    topics: ["Dog"],
+  },
+  {
+    url: "https://images.rawpixel.com/image_1000/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvam9iNjc5LTA3MS14LmpwZw.jpg",
+    topics: ["Hen"],
+  },
+  {
+    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/USAF_Afterburner_Monster_Jam.jpg/220px-USAF_Afterburner_Monster_Jam.jpg",
+    topics: ["Monster truck", "Vehicle"],
+  },
+  {
+    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Grave_digger.JPG/220px-Grave_digger.JPG",
+    topics: ["Monster truck", "Vehicle"],
+  },
+  {
+    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Left_side_of_Flying_Pigeon.jpg/300px-Left_side_of_Flying_Pigeon.jpg",
+    topics: ["Bicycle"],
+  },
+  {
+    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/300px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    topics: ["Food"],
+  },
+  {
+    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Mini_pig_2.jpg/220px-Mini_pig_2.jpg",
+    topics: ["Pig"],
+  },
+  {
+    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/250px-GoldenGateBridge-001.jpg",
+    topics: ["Golden Gate Bridge", "Bridge"],
+  },
+];
+
+const TextCaptcha = ({ onVerify }: any) => {
   const [inputValue, setInputValue] = useState("");
   const [render, setRender] = useState(false);
   const [ReactCaptcha, setReactCaptcha] = useState(null as any);
@@ -51,7 +88,7 @@ const TextCaptcha = () => {
         position: "top-right",
       });
     } else {
-      //valid
+      onVerify();
     }
   };
 
@@ -74,7 +111,7 @@ const TextCaptcha = () => {
             background="#093666"
             onClick={() => handleSubmit()}
           >
-            Submit
+            Verify
           </Button>
         </div>
       ) : null}
@@ -82,4 +119,29 @@ const TextCaptcha = () => {
   );
 };
 
-export { TextCaptcha };
+const CellCaptcha = ({ onVerify }: any) => {
+  return (
+    <div className="captcha">
+      <FaCaptcha
+        onVerificationComplete={() => {
+          onVerify();
+        }}
+        captchaTopics={[
+          "Golden Gate Bridge",
+          "Monster truck",
+          "Vehicle",
+          "Hen",
+          "Dog",
+          "Pig",
+          "Food",
+        ]}
+        imgTopicUrls={ExampleImages}
+        cellsWide={3}
+        allowRetry
+        simulateSlow={0}
+      />
+    </div>
+  );
+};
+
+export { TextCaptcha, CellCaptcha };

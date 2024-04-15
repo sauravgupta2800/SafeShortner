@@ -2,9 +2,9 @@
 import "./landing-page.scss";
 import { useState, useRef } from "react";
 import { Button, Divider, Input, useToast } from "@chakra-ui/react";
-import { StarIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import { StarIcon, ArrowRightIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { experiences } from "./config";
-import { TextCaptcha } from "./captchas";
+import CollapseRow from "./collapse";
 
 export default function Index() {
   const onShorten = (url: string) => {
@@ -28,7 +28,9 @@ export default function Index() {
       </div>
       <MainInput onShorten={(url: string) => onShorten(url)} />
 
-      <TextCaptcha />
+      <div className="flex w-5/6 mx-auto">
+        <CollapseRow />
+      </div>
 
       <ReviewCards />
     </main>
@@ -95,7 +97,7 @@ const MainInput = ({ handleChange, handleOnClick }: any) => {
       <Button
         colorScheme="blue"
         size="lg"
-        rightIcon={<ArrowRightIcon />}
+        rightIcon={<ChevronRightIcon fontSize={"30px"} />}
         borderLeftRadius="0"
         borderRightRadius="10px"
         background="#093666"
