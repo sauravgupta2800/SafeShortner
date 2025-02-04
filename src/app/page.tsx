@@ -10,7 +10,7 @@ import { useDisclosure } from "@chakra-ui/react";
 export default function Index() {
   const [data, setData] = useState({});
   const { isOpen: openDetails, onToggle } = useDisclosure();
-  const [shortened, setShortened] = useState(true);
+  const [shortened, setShortened] = useState(false);
 
   const setDataState = (key: string, value: any) => {
     setData((prevValue) => {
@@ -80,9 +80,7 @@ export default function Index() {
 }
 
 const MainInput = ({ onShorten }: any) => {
-  const [inputValue, setInputValue] = useState(
-    "https://nextjs.org/docs/14/app/building-your-application/routing/route-handlers"
-  );
+  const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null); // Ref for the input element
   const toast = useToast();
 
