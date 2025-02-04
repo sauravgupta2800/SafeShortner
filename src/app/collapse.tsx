@@ -120,11 +120,14 @@ export default function CollapseRow({
   );
   const [expireTime, setExpireTime] = useState("");
   const [checkedControl, setCheckedControl] = useState(false);
-  const [blockedCountries, setBlockedCountries] = useState([]);
+  // const [blockedCountries, setBlockedCountries] = useState([]);
+  const [blockedCountries, setBlockedCountries] = useState<{ value: string; label: string }[]>([]);
+  const toast = useToast();
   const onURLEdit = () => {
     setShortName(data.shortPath);
     setUrlEdit(true);
   };
+
 
   const isOpen = openDetails;
 
@@ -145,6 +148,134 @@ export default function CollapseRow({
     } catch (error) {
       console.error("Error updating short URL:", error);
     }
+  };
+
+  const handleUpdate = async () => {
+
+    const showToast = (title: any, description: any) => {
+      toast({
+        title: title,
+        description: description,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+    };
+
+    const payload = {
+      id: data.id,
+      checkedPasscode: checkedPasscode,
+      passcode: passcode,
+      checkedCaptcha: checkedCaptcha,
+      captcha: captcha,
+      checkedExpiry: checkedExpiry,
+      expireTime: expireTime,
+      expireTimezone: expireTimezone,
+      checkedControl: checkedControl,
+      blockedCountries: checkedControl ? blockedCountries.map(country => country.value) : [],
+    };
+
+    //Validation for passcode
+    if (checkedPasscode) {
+      if (!passcode || passcode.length !== 6) {
+        showToast("Invalid Passcode", "Provide a 6 digit passcode");
+        return;
+      }
+    } else {
+      payload.passcode = "";
+    }   
+
+    //validation for captcha
+    if (checkedCaptcha) {
+      if (!captcha) {
+        showToast("CAPTCHA Required", "CAPTCHA is required");
+        return;
+      }
+    } else {
+      payload.captcha = "";
+    }
+
+    //Validation for expiry
+    if (checkedExpiry) {
+      if (!expireTime) {
+        showToast("Expiry Date Required", "Please select an expiry date");
+        return;
+      }
+      const currentDate = new Date();
+      const selectedDate = new Date(expireTime);
+      currentDate.setHours(0, 0, 0, 0);
+      if (selectedDate < currentDate) {
+        showToast("Invalid Expiry Date", "Date cannot be past");
+        return;
+      }
+    } else {
+      payload.expireTime = "";
+      payload.expireTimezone = null;
+    }
+
+    //Validation for blocked countries
+    if (checkedControl) {
+      if (!blockedCountries.length) {
+        showToast("Blocked Countries Required", "Please select at least one country");
+        return;
+      }
+    } else {
+      payload.blockedCountries = [];
+    } 
+    
+    try {
+      const response = await axios.put("/api/shorten", { ...payload });
+      console.log("Short URL updated:", response.data);
+    } catch (error) {
+      console.error("Error updating short URL:", error);
+    }
+    
+  }
+
+  const handleReset = async() => {
+    setCheckedPasscode(false);
+    setPasscode("");
+    setCheckedCaptcha(false);
+    setCaptcha("");
+    setCheckedExpiry(false);
+    setExpireTimezone(getTimezones()[0].utcOffset);
+    setExpireTime("");
+    setCheckedControl(false);
+    setBlockedCountries([]);
+
+    const payload = {
+      id: data.id,
+      checkedPasscode: false,
+      passcode: "",
+      checkedCaptcha: false,
+      captcha: "",
+      checkedExpiry: false,
+      expireTime: "",
+      expireTimezone: getTimezones()[0].utcOffset,
+      checkedControl: false,
+      blockedCountries: [],
+    };
+  
+    try {
+      const response = await axios.put("/api/shorten", payload);
+      console.log("Data reset:", response.data);
+    } catch (error) {
+      console.error("Error resetting data:", error);
+    }
+  }
+
+  const handleCheckExpiry = (value: boolean) => {
+    if (value) {
+      const userTimeZoneOffset = new Date().getTimezoneOffset() / -60; // Get the offset in hours
+      console.log("userTimeZoneOffset", userTimeZoneOffset);
+      const timezones = getTimezones();
+      const matchedTimezone = timezones.find((tz: any) => tz.utcOffset === userTimeZoneOffset) || timezones[0];
+
+      setExpireTimezone(matchedTimezone.utcOffset);      
+      setExpireTime("");
+    }
+    setCheckedExpiry(value);
   };
 
   return (
@@ -322,7 +453,7 @@ export default function CollapseRow({
               key="expiry"
               title="Set Link Expiry"
               isChecked={checkedExpiry}
-              onChange={(value: boolean) => setCheckedExpiry(value)}
+              onChange={(value: boolean) => handleCheckExpiry(value)}
             >
               <div className="flex">
                 <div>
@@ -397,10 +528,10 @@ export default function CollapseRow({
 
             <Divider className="my-4" colorScheme="blue" />
             <div className="flex justify-end">
-              <Button colorScheme="teal" variant="ghost">
+              <Button colorScheme="teal" variant="ghost" onClick = {() => handleReset()}>
                 Reset All
               </Button>
-              <Button colorScheme="teal" variant="outline" className="ml-4">
+              <Button colorScheme="teal" variant="outline" className="ml-4" onClick={() => handleUpdate()}>
                 Update
               </Button>
             </div>
