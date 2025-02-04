@@ -10,15 +10,54 @@ import {
 } from "chakra-react-select";
 
 const getTimezones = () => {
-  const timezonesObj = ct.getAllTimezones();
-  const array: any = [];
-  for (let key in timezonesObj) {
-    array.push({
-      id: timezonesObj[key].name,
-      label: `${timezonesObj[key].name} (${timezonesObj[key].utcOffsetStr})`,
-      value: timezonesObj[key].utcOffsetStr,
-    });
-  }
+  const array: any = [
+    {
+      id: "EST",
+      label: "Eastern Standard Time (EST)",
+      utcOffset: -5,
+    },
+    {
+      id: "CST",
+      label: "Central Standard Time (CST)",
+      utcOffset: -6,
+    },
+    {
+      id: "MST",
+      label: "Mountain Standard Time (MST)",
+      utcOffset: -7,
+    },
+    {
+      id: "PST",
+      label: "Pacific Standard Time (PST)",
+      utcOffset: -8,
+    },
+    {
+      id: "AKST",
+      label: "Alaska Standard Time (AKST)",
+      utcOffset: -9,
+    },
+    {
+      id: "HAST",
+      label: "Hawaii-Aleutian Standard Time (HAST)",
+      utcOffset: -10,
+    },
+    {
+      id: "AST",
+      label: "Atlantic Standard Time (AST)",
+      utcOffset: -4,
+    },
+    {
+      id: "ChST",
+      label: "Chamorro Standard Time (ChST)",
+      utcOffset: 10,
+    },
+    {
+      id: "SST",
+      label: "Samoa Standard Time (SST)",
+      utcOffset: -11,
+    },
+  ];
+
   return array;
 };
 
@@ -34,7 +73,7 @@ const getCountries = () => {
   return array;
 };
 
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   Link,
@@ -59,10 +98,16 @@ import {
 } from "@chakra-ui/icons";
 import textcaptcha from "../../public/textcaptcha.jpg";
 import cellcaptcha from "../../public/cellcaptcha.jpg";
-export default function CollapseRow() {
+import axios from "axios";
+
+export default function CollapseRow({
+  data = {},
+  openDetails = false,
+  onDetailsToggle,
+}: any) {
   const [urlEdit, setUrlEdit] = useState(false);
   const [shortName, setShortName] = useState("");
-  const { isOpen, onToggle } = useDisclosure();
+  // const { isOpen, onToggle } = useDisclosure(openDetails);
 
   // Vars
   const [checkedPasscode, setCheckedPasscode] = useState(false);
@@ -70,12 +115,36 @@ export default function CollapseRow() {
   const [checkedCaptcha, setCheckedCaptcha] = useState(false);
   const [captcha, setCaptcha] = useState("");
   const [checkedExpiry, setCheckedExpiry] = useState(false);
-  const [expireTimezone, setExpireTimezone] = useState(null);
+  const [expireTimezone, setExpireTimezone] = useState(
+    getTimezones()[0].utcOffset
+  );
   const [expireTime, setExpireTime] = useState("");
   const [checkedControl, setCheckedControl] = useState(false);
   const [blockedCountries, setBlockedCountries] = useState([]);
   const onURLEdit = () => {
+    setShortName(data.shortPath);
     setUrlEdit(true);
+  };
+
+  const isOpen = openDetails;
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
+  const urlWithShortPath = `https://SafeShortner.com/link/${data.shortPath}`;
+
+  const updateShortName = async () => {
+    const payload = {
+      id: data.id,
+      shortPath: shortName,
+    };
+
+    try {
+      const response = await axios.put("/api/shorten", { ...payload });
+      console.log("Short URL updated:", response.data);
+    } catch (error) {
+      console.error("Error updating short URL:", error);
+    }
   };
 
   return (
@@ -105,7 +174,7 @@ export default function CollapseRow() {
                   _hover={{
                     background: "#1ed66d",
                   }}
-                  onClick={() => {}}
+                  onClick={() => updateShortName()}
                 >
                   <CheckIcon />
                 </Button>
@@ -124,10 +193,8 @@ export default function CollapseRow() {
               </div>
             ) : (
               <div className="flex items-center">
-                <Link href="https://SafeShortner.com/link/123dffd" isExternal>
-                  <div className="text-lg linkcolor">
-                    SafeShortner.com/link/123dffd
-                  </div>
+                <Link href={urlWithShortPath} isExternal>
+                  <div className="text-lg linkcolor">{urlWithShortPath}</div>
                 </Link>
 
                 <EditIcon
@@ -156,7 +223,7 @@ export default function CollapseRow() {
               size="md"
               rightIcon={isOpen ? <TriangleUpIcon /> : <TriangleDownIcon />}
               colorScheme="green"
-              onClick={onToggle}
+              onClick={() => onDetailsToggle(!isOpen)}
             >
               Secure
             </Button>
@@ -164,19 +231,26 @@ export default function CollapseRow() {
         </div>
         <div className="collpserow--head--bottom text-sm truncate ... w-3/4">
           <LinkIcon className="mr-2" />
-          {"https://v2.chakra-ui.com/docs/components/icon/usage/docs/"}
+          {data.originalUrl}
         </div>
       </div>
 
-      <Collapse in={isOpen || true} animateOpacity>
+      <Collapse in={isOpen} animateOpacity>
         <div className="collpserow--body">
           <Box p="6" mt="4" bg="white" rounded="md" shadow="md">
             <CheckBoxWrapper
+              key="passcode"
               title="Apply Passcode"
               isChecked={checkedPasscode}
               onChange={(value: boolean) => setCheckedPasscode(value)}
             >
-              <PinInput size="lg">
+              <PinInput
+                value={passcode}
+                size="lg"
+                onChange={(value) => {
+                  setPasscode(value);
+                }}
+              >
                 <PinInputField />
                 <PinInputField />
                 <PinInputField />
@@ -189,9 +263,14 @@ export default function CollapseRow() {
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
+              key="captcha"
               title="Choose Captcha"
               isChecked={checkedCaptcha}
-              onChange={(value: boolean) => setCheckedCaptcha(value)}
+              onChange={(value: boolean) => {
+                if (!captcha) setCaptcha("text");
+                if (!value) setCaptcha("");
+                setCheckedCaptcha(value);
+              }}
             >
               <div className="flex">
                 <Box
@@ -240,6 +319,7 @@ export default function CollapseRow() {
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
+              key="expiry"
               title="Set Link Expiry"
               isChecked={checkedExpiry}
               onChange={(value: boolean) => setCheckedExpiry(value)}
@@ -248,18 +328,23 @@ export default function CollapseRow() {
                 <div>
                   <div className="checkformtitle">Select the Timezone</div>
                   <div className="w-96 mt-1">
-                    <NewSelect
-                      menuPortalTarget={
-                        typeof window !== "undefined" ? document.body : null
-                      }
-                      value={expireTimezone}
-                      options={getTimezones()}
-                      placeholder="Select Timezone..."
-                      onChange={(value: any) => {
-                        console.log("check...", value);
-                        setExpireTimezone(value);
-                      }}
-                    />
+                    {isMounted ? (
+                      <NewSelect
+                        id={"timezone"}
+                        menuPortalTarget={
+                          typeof window !== "undefined" ? document.body : null
+                        }
+                        value={getTimezones().find(
+                          ({ utcOffset }: any) => utcOffset == expireTimezone
+                        )}
+                        options={getTimezones()}
+                        placeholder="Select Timezone..."
+                        onChange={(value: any) => {
+                          console.log("check...", value);
+                          setExpireTimezone(value.utcOffset);
+                        }}
+                      />
+                    ) : null}
                   </div>
                 </div>
 
@@ -271,7 +356,10 @@ export default function CollapseRow() {
                     type="datetime-local"
                     className="mt-1"
                     value={expireTime}
-                    onChange={(e: any) => setExpireTime(e.target.value)}
+                    onChange={(e: any) => {
+                      console.log("e.target.value", e.target.value);
+                      setExpireTime(e.target.value);
+                    }}
                   />
                 </div>
               </div>
@@ -280,6 +368,7 @@ export default function CollapseRow() {
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
+              key="control"
               title="Access Control"
               isChecked={checkedControl}
               onChange={(value: boolean) => setCheckedControl(value)}
@@ -287,19 +376,22 @@ export default function CollapseRow() {
               <div>
                 <div className="checkformtitle">Blacklisted Countries</div>
 
-                <NewSelect
-                  menuPortalTarget={
-                    typeof window !== "undefined" ? document.body : null
-                  }
-                  isMulti
-                  value={blockedCountries}
-                  options={getCountries()}
-                  placeholder="Search and Select countries..."
-                  onChange={(value: any) => {
-                    console.log("check...", value);
-                    setBlockedCountries(value);
-                  }}
-                />
+                {isMounted ? (
+                  <NewSelect
+                    id={"countries"}
+                    menuPortalTarget={
+                      typeof window !== "undefined" ? document.body : null
+                    }
+                    isMulti
+                    value={blockedCountries}
+                    options={getCountries()}
+                    placeholder="Search and Select countries..."
+                    onChange={(value: any) => {
+                      console.log("check...", value);
+                      setBlockedCountries(value);
+                    }}
+                  />
+                ) : null}
               </div>
             </CheckBoxWrapper>
 

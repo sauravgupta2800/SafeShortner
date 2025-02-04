@@ -1,15 +1,51 @@
 "use client";
 import "./landing-page.scss";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import { Button, Divider, Input, useToast } from "@chakra-ui/react";
 import { StarIcon, ArrowRightIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { experiences } from "./config";
 import CollapseRow from "./collapse";
-
+import { useDisclosure } from "@chakra-ui/react";
 export default function Index() {
-  const onShorten = (url: string) => {
-    console.log("onShorten");
+  const [data, setData] = useState({});
+  const { isOpen: openDetails, onToggle } = useDisclosure();
+  const [shortened, setShortened] = useState(true);
+
+  const setDataState = (key: string, value: any) => {
+    setData((prevValue) => {
+      return {
+        ...prevValue,
+        [key]: value,
+      };
+    });
   };
+
+  const onShorten = async (url: string) => {
+    console.log("CLIEKED", url);
+    try {
+      const response = await axios.post("/api/shorten", { originalUrl: url });
+      console.log("Short URL created:", response.data);
+      setData(response.data);
+      setShortened(true);
+    } catch (error) {
+      console.error("Error creating short URL:", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("API CALL :)");
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get("/api/shorten");
+        console.error("SUCCESS fetching :", response);
+      } catch (error) {
+        console.error("ERROR fetching :", error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <main className="home">
@@ -28,17 +64,25 @@ export default function Index() {
       </div>
       <MainInput onShorten={(url: string) => onShorten(url)} />
 
-      <div className="flex w-5/6 mx-auto">
-        <CollapseRow />
-      </div>
+      {shortened ? (
+        <div className="flex w-5/6 mx-auto">
+          <CollapseRow
+            data={data}
+            openDetails={openDetails}
+            onDetailsToggle={onToggle}
+          />
+        </div>
+      ) : null}
 
       <ReviewCards />
     </main>
   );
 }
 
-const MainInput = ({ handleChange, handleOnClick }: any) => {
-  const [inputValue, setInputValue] = useState("");
+const MainInput = ({ onShorten }: any) => {
+  const [inputValue, setInputValue] = useState(
+    "https://nextjs.org/docs/14/app/building-your-application/routing/route-handlers"
+  );
   const inputRef = useRef<HTMLInputElement>(null); // Ref for the input element
   const toast = useToast();
 
@@ -65,6 +109,10 @@ const MainInput = ({ handleChange, handleOnClick }: any) => {
     } else {
       // Your logic to handle valid URL
       // For example, shorten the URL
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+      onShorten(inputValue);
     }
   };
 
