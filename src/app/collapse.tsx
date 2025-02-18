@@ -135,9 +135,11 @@ export default function CollapseRow({
   const isOpen = openDetails;
 
   const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => setIsMounted(true), []);
+  useEffect(() => setIsMounted(true), []); 
 
-  const urlWithShortPath = `https://SafeShortner.com/link/${data.shortPath}`;
+  const safeShortnerURL = `https://safe-shortner.vercel.app`;
+
+  const urlWithShortPath = `${safeShortnerURL}/link/${data.shortPath}`;
 
   const updateShortName = async () => {
     if (!shortened) return;
@@ -152,7 +154,7 @@ export default function CollapseRow({
       console.log("Short URL updated:", response.data);
       showToast(
         "Updated!",
-        `Short URL updated to https://SafeShortner.com/link/${shortName}`,
+        `Short URL updated to ${safeShortnerURL}/link/${shortName}`,
         "success"
       );
       setUrlEdit(false);
@@ -161,7 +163,7 @@ export default function CollapseRow({
       console.error("Error updating short URL:", error);
       showToast(
         "Error",
-        `Short path https://SafeShortner.com/link/${shortName} already exists`
+        `Short path ${safeShortnerURL}/link/${shortName} already exists`
       );
     }
   };
@@ -320,6 +322,12 @@ export default function CollapseRow({
 
   const onCopy = (url: string) => {
     // Copy to clipboard
+    if (!shortened) {
+      showToast("Error", "No URL data to copy", "warning");
+      return;
+    }
+    navigator.clipboard.writeText(url);
+    showToast("Copied!", "Shortened URL copied to clipboard", "success");
   };
 
   return (
@@ -332,7 +340,7 @@ export default function CollapseRow({
                 {urlEdit ? (
                   <div className="flex items-center">
                     <div className="text-lg linkcolor">
-                      SafeShortner.com/link/
+                    {`${safeShortnerURL}/link/`}
                     </div>
                     <Input
                       value={shortName}
