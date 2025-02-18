@@ -7,6 +7,9 @@ import { StarIcon, ArrowRightIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { experiences } from "./config";
 import CollapseRow from "./collapse";
 import { useDisclosure } from "@chakra-ui/react";
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
+
 export default function Index() {
   const [data, setData] = useState({});
   const { isOpen: openDetails, onToggle } = useDisclosure({
@@ -51,7 +54,7 @@ export default function Index() {
     <main className="home">
       <div className="home__info w-80 flex flex-col items-center justify-center">
         <h1 className="home__info__title">Shorten. Secure. Share</h1>
-
+        <Walkthrough />
         <h2 className="home__info__subtitle">
           SafeShortner goes{" "}
           <b className="markHighlight">beyond URL shortening</b>. Create{" "}
@@ -187,6 +190,38 @@ const ReviewCard = ({ info = {} }) => {
       <div className="w-full text-left	 text-base text-righ">{role}</div>
 
       <Divider className="mt-4" />
+    </div>
+  );
+};
+
+
+export const Walkthrough = () => { 
+  const startIntro = () => {
+    introJs().setOptions({
+      steps: [
+        {
+          intro: "Welcome to SafeShortner! Let's take a quick tour.",
+        },
+        {
+          element: document.querySelector('.collpserow--head--top') as HTMLElement | null,
+          intro: "Here you can see the shortened URL and edit it.",
+        },
+
+      ],
+    }).start();
+  };
+
+  return (
+    <div>
+      <Button
+        colorScheme="blue"
+        size="md"
+        background="#1d85ac"
+        onClick={() => startIntro()}
+        style={{ top: "10px", right: "10px", position: "absolute",  }}  
+      >
+        Walkthrough
+      </Button>
     </div>
   );
 };
