@@ -9,7 +9,7 @@ import CollapseRow from "./collapse";
 import { useDisclosure } from "@chakra-ui/react";
 export default function Index() {
   const [data, setData] = useState({});
-  const { isOpen: openDetails, onToggle } = useDisclosure();
+  const { isOpen: openDetails, onToggle } = useDisclosure({ isOpen: true });
   const [shortened, setShortened] = useState(false);
 
   const setDataState = (key: string, value: any) => {
@@ -64,16 +64,15 @@ export default function Index() {
       </div>
       <MainInput onShorten={(url: string) => onShorten(url)} />
 
-      {shortened ? (
-        <div className="flex w-5/6 mx-auto">
-          <CollapseRow
-            data={data}
-            openDetails={openDetails}
-            onDetailsToggle={onToggle}
-            setDataState={(key: any, value: any) => setDataState(key, value)}
-          />
-        </div>
-      ) : null}
+      <div className="flex w-5/6 mx-auto pb-16">
+        <CollapseRow
+          shortened={shortened}
+          data={data}
+          openDetails={openDetails}
+          onDetailsToggle={onToggle}
+          setDataState={(key: any, value: any) => setDataState(key, value)}
+        />
+      </div>
     </main>
   );
 }

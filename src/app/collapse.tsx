@@ -101,6 +101,7 @@ import cellcaptcha from "../../public/cellcaptcha.jpg";
 import axios from "axios";
 
 export default function CollapseRow({
+  shortened = false,
   data = {},
   openDetails = false,
   onDetailsToggle,
@@ -139,6 +140,8 @@ export default function CollapseRow({
   const urlWithShortPath = `https://SafeShortner.com/link/${data.shortPath}`;
 
   const updateShortName = async () => {
+    if (!shortened) return;
+
     const payload = {
       id: data.id,
       shortPath: shortName,
@@ -175,6 +178,8 @@ export default function CollapseRow({
   };
 
   const handleUpdate = async () => {
+    if (!shortened) return;
+
     const payload = {
       id: data.id,
       checkedPasscode: checkedPasscode,
@@ -255,6 +260,8 @@ export default function CollapseRow({
   };
 
   const handleReset = async () => {
+    if (!shortened) return;
+
     setCheckedPasscode(false);
     setPasscode("");
     setCheckedCaptcha(false);
@@ -310,59 +317,69 @@ export default function CollapseRow({
       <div className="collpserow--head">
         <div className="collpserow--head--top">
           <div>
-            {urlEdit ? (
-              <div className="flex items-center">
-                <div className="text-lg linkcolor">SafeShortner.com/link/</div>
-                <Input
-                  value={shortName}
-                  variant="outline"
-                  placeholder="Enter Custom Name"
-                  background={"white"}
-                  size="sm"
-                  paddingLeft="4px"
-                  borderRadius="0"
-                  autoFocus
-                  onChange={(e: any) => setShortName(e.target.value)}
-                />
-                <Button
-                  colorScheme="teal"
-                  size="sm"
-                  borderRadius="0"
-                  background="#61d79f"
-                  _hover={{
-                    background: "#1ed66d",
-                  }}
-                  onClick={() => updateShortName()}
-                >
-                  <CheckIcon />
-                </Button>
-                <Button
-                  colorScheme="orange"
-                  size="sm"
-                  borderRadius="0"
-                  background="#f3af57"
-                  _hover={{
-                    background: "#f7a235",
-                  }}
-                  onClick={() => setUrlEdit(false)}
-                >
-                  <CloseIcon />
-                </Button>
+            {shortened ? (
+              <div>
+                {urlEdit ? (
+                  <div className="flex items-center">
+                    <div className="text-lg linkcolor">
+                      SafeShortner.com/link/
+                    </div>
+                    <Input
+                      value={shortName}
+                      variant="outline"
+                      placeholder="Enter Custom Name"
+                      background={"white"}
+                      size="sm"
+                      paddingLeft="4px"
+                      borderRadius="0"
+                      autoFocus
+                      onChange={(e: any) => setShortName(e.target.value)}
+                    />
+                    <Button
+                      colorScheme="teal"
+                      size="sm"
+                      borderRadius="0"
+                      background="#61d79f"
+                      _hover={{
+                        background: "#1ed66d",
+                      }}
+                      onClick={() => updateShortName()}
+                    >
+                      <CheckIcon />
+                    </Button>
+                    <Button
+                      colorScheme="orange"
+                      size="sm"
+                      borderRadius="0"
+                      background="#f3af57"
+                      _hover={{
+                        background: "#f7a235",
+                      }}
+                      onClick={() => setUrlEdit(false)}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    <Link href={urlWithShortPath} isExternal>
+                      <div className="text-lg linkcolor">
+                        {urlWithShortPath}
+                      </div>
+                    </Link>
+
+                    <EditIcon
+                      focusable
+                      className="ml-2"
+                      color="#093666"
+                      _hover={{ cursor: "pointer" }}
+                      onClick={() => onURLEdit()}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
-              <div className="flex items-center">
-                <Link href={urlWithShortPath} isExternal>
-                  <div className="text-lg linkcolor">{urlWithShortPath}</div>
-                </Link>
-
-                <EditIcon
-                  focusable
-                  className="ml-2"
-                  color="#093666"
-                  _hover={{ cursor: "pointer" }}
-                  onClick={() => onURLEdit()}
-                />
-              </div>
+              <div className="linkcolor">Shortened URL will be shown here</div>
             )}
           </div>
           <div>
@@ -387,10 +404,12 @@ export default function CollapseRow({
             </Button>
           </div>
         </div>
-        <div className="collpserow--head--bottom text-sm truncate ... w-3/4">
-          <LinkIcon className="mr-2" />
-          {data.originalUrl}
-        </div>
+        {shortened && (
+          <div className="collpserow--head--bottom text-sm truncate ... w-3/4">
+            <LinkIcon className="mr-2" />
+            {data.originalUrl}
+          </div>
+        )}
       </div>
 
       <Collapse in={isOpen} animateOpacity>
