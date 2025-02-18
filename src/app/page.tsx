@@ -70,11 +70,10 @@ export default function Index() {
             data={data}
             openDetails={openDetails}
             onDetailsToggle={onToggle}
+            setDataState={(key: any, value: any) => setDataState(key, value)}
           />
         </div>
       ) : null}
-
-      <ReviewCards />
     </main>
   );
 }

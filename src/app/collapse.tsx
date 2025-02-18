@@ -104,6 +104,7 @@ export default function CollapseRow({
   data = {},
   openDetails = false,
   onDetailsToggle,
+  setDataState,
 }: any) {
   const [urlEdit, setUrlEdit] = useState(false);
   const [shortName, setShortName] = useState("");
@@ -121,13 +122,14 @@ export default function CollapseRow({
   const [expireTime, setExpireTime] = useState("");
   const [checkedControl, setCheckedControl] = useState(false);
   // const [blockedCountries, setBlockedCountries] = useState([]);
-  const [blockedCountries, setBlockedCountries] = useState<{ value: string; label: string }[]>([]);
+  const [blockedCountries, setBlockedCountries] = useState<
+    { value: string; label: string }[]
+  >([]);
   const toast = useToast();
   const onURLEdit = () => {
     setShortName(data.shortPath);
     setUrlEdit(true);
   };
-
 
   const isOpen = openDetails;
 
@@ -145,24 +147,34 @@ export default function CollapseRow({
     try {
       const response = await axios.put("/api/shorten", { ...payload });
       console.log("Short URL updated:", response.data);
+      showToast(
+        "Updated!",
+        `Short URL updated to https://SafeShortner.com/link/${shortName}`,
+        "success"
+      );
+      setUrlEdit(false);
+      setDataState("shortPath", shortName);
     } catch (error) {
       console.error("Error updating short URL:", error);
+      showToast(
+        "Error",
+        `Short path https://SafeShortner.com/link/${shortName} already exists`
+      );
     }
   };
 
+  const showToast = (title: any, description: any, status: any = "error") => {
+    toast({
+      title: title,
+      description: description,
+      status: status,
+      duration: 3000,
+      isClosable: true,
+      position: "top-right",
+    });
+  };
+
   const handleUpdate = async () => {
-
-    const showToast = (title: any, description: any) => {
-      toast({
-        title: title,
-        description: description,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "top-right",
-      });
-    };
-
     const payload = {
       id: data.id,
       checkedPasscode: checkedPasscode,
@@ -173,7 +185,9 @@ export default function CollapseRow({
       expireTime: expireTime,
       expireTimezone: expireTimezone,
       checkedControl: checkedControl,
-      blockedCountries: checkedControl ? blockedCountries.map(country => country.value) : [],
+      blockedCountries: checkedControl
+        ? blockedCountries.map((country) => country.value)
+        : [],
     };
 
     //Validation for passcode
@@ -184,7 +198,7 @@ export default function CollapseRow({
       }
     } else {
       payload.passcode = "";
-    }   
+    }
 
     //validation for captcha
     if (checkedCaptcha) {
@@ -217,23 +231,30 @@ export default function CollapseRow({
     //Validation for blocked countries
     if (checkedControl) {
       if (!blockedCountries.length) {
-        showToast("Blocked Countries Required", "Please select at least one country");
+        showToast(
+          "Blocked Countries Required",
+          "Please select at least one country"
+        );
         return;
       }
     } else {
       payload.blockedCountries = [];
-    } 
-    
+    }
+
     try {
       const response = await axios.put("/api/shorten", { ...payload });
       console.log("Short URL updated:", response.data);
+      showToast("Updated!", `Security setting applied!`, "success");
     } catch (error) {
       console.error("Error updating short URL:", error);
+      showToast(
+        "Error",
+        `Error occurred while updating security settings. Please try again.`
+      );
     }
-    
-  }
+  };
 
-  const handleReset = async() => {
+  const handleReset = async () => {
     setCheckedPasscode(false);
     setPasscode("");
     setCheckedCaptcha(false);
@@ -256,23 +277,29 @@ export default function CollapseRow({
       checkedControl: false,
       blockedCountries: [],
     };
-  
+
     try {
       const response = await axios.put("/api/shorten", payload);
       console.log("Data reset:", response.data);
+      showToast("Updated!", `Security reset applied!`, "success");
     } catch (error) {
-      console.error("Error resetting data:", error);
+      showToast(
+        "Error",
+        `Error occurred while resetting security settings. Please try again.`
+      );
     }
-  }
+  };
 
   const handleCheckExpiry = (value: boolean) => {
     if (value) {
       const userTimeZoneOffset = new Date().getTimezoneOffset() / -60; // Get the offset in hours
       console.log("userTimeZoneOffset", userTimeZoneOffset);
       const timezones = getTimezones();
-      const matchedTimezone = timezones.find((tz: any) => tz.utcOffset === userTimeZoneOffset) || timezones[0];
+      const matchedTimezone =
+        timezones.find((tz: any) => tz.utcOffset === userTimeZoneOffset) ||
+        timezones[0];
 
-      setExpireTimezone(matchedTimezone.utcOffset);      
+      setExpireTimezone(matchedTimezone.utcOffset);
       setExpireTime("");
     }
     setCheckedExpiry(value);
@@ -528,10 +555,19 @@ export default function CollapseRow({
 
             <Divider className="my-4" colorScheme="blue" />
             <div className="flex justify-end">
-              <Button colorScheme="teal" variant="ghost" onClick = {() => handleReset()}>
+              <Button
+                colorScheme="teal"
+                variant="ghost"
+                onClick={() => handleReset()}
+              >
                 Reset All
               </Button>
-              <Button colorScheme="teal" variant="outline" className="ml-4" onClick={() => handleUpdate()}>
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                className="ml-4"
+                onClick={() => handleUpdate()}
+              >
                 Update
               </Button>
             </div>
