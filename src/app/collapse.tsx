@@ -99,6 +99,9 @@ import {
 import textcaptcha from "../../public/textcaptcha.jpg";
 import cellcaptcha from "../../public/cellcaptcha.jpg";
 import axios from "axios";
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
+import { Walkthrough } from './page';
 
 export default function CollapseRow({
   shortened = false,
@@ -332,6 +335,7 @@ export default function CollapseRow({
 
   return (
     <div className="collpserow">
+      <Walkthrough />
       <div className="collpserow--head">
         <div className="collpserow--head--top">
           <div>
@@ -402,6 +406,7 @@ export default function CollapseRow({
           </div>
           <div>
             <Button
+              className="shorten-url-copy"
               colorScheme="blue"
               size="md"
               rightIcon={<CopyIcon />}
@@ -412,7 +417,7 @@ export default function CollapseRow({
             </Button>
 
             <Button
-              className="ml-2"
+              className="ml-2 shorten-url-secure"
               size="md"
               rightIcon={isOpen ? <TriangleUpIcon /> : <TriangleDownIcon />}
               colorScheme="green"
@@ -434,6 +439,7 @@ export default function CollapseRow({
         <div className="collpserow--body">
           <Box p="6" mt="4" bg="white" rounded="md" shadow="md">
             <CheckBoxWrapper
+              className="shorten-url-secure-passcode"
               key="passcode"
               title="Apply Passcode"
               isChecked={checkedPasscode}
@@ -458,6 +464,7 @@ export default function CollapseRow({
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
+              className="shorten-url-secure-captcha"
               key="captcha"
               title="Choose Captcha"
               isChecked={checkedCaptcha}
@@ -514,6 +521,7 @@ export default function CollapseRow({
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
+              className="shorten-url-secure-expiry"
               key="expiry"
               title="Set Link Expiry"
               isChecked={checkedExpiry}
@@ -563,6 +571,7 @@ export default function CollapseRow({
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
+              className="shorten-url-secure-accesscontrol"
               key="control"
               title="Access Control"
               isChecked={checkedControl}
@@ -591,8 +600,9 @@ export default function CollapseRow({
             </CheckBoxWrapper>
 
             <Divider className="my-4" colorScheme="blue" />
-            <div className="flex justify-end">
+            <div className="flex justify-end ">
               <Button
+                className="shorten-url-reset"
                 colorScheme="teal"
                 variant="ghost"
                 onClick={() => handleReset()}
@@ -600,9 +610,9 @@ export default function CollapseRow({
                 Reset All
               </Button>
               <Button
+                className="ml-4 shorten-url-update"
                 colorScheme="teal"
                 variant="outline"
-                className="ml-4"
                 onClick={() => handleUpdate()}
               >
                 Update

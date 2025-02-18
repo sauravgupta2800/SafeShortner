@@ -124,7 +124,7 @@ const MainInput = ({ onShorten }: any) => {
   };
 
   return (
-    <div className="flex w-5/6 mx-auto my-16">
+    <div className="flex w-5/6 mx-auto my-16 shortnen-link">
       <Input
         ref={inputRef}
         value={inputValue}
@@ -200,13 +200,44 @@ export const Walkthrough = () => {
     introJs().setOptions({
       steps: [
         {
-          intro: "Welcome to SafeShortner! Let's take a quick tour.",
+          intro: "Welcome to SafeShortner! Lets take a quick tour. SafeShortner is a powerful tool that goes beyond URL shortening. Share confidently, knowing your content is safeguarded",
         },
         {
-          element: document.querySelector('.collpserow--head--top') as HTMLElement | null,
-          intro: "Here you can see the shortened URL and edit it.",
+          element: document.querySelector('.shortnen-link') as HTMLElement | null,
+          intro: "Enter the URL you want to shorten here.",
         },
-
+        {
+          element: document.querySelector('.shorten-url-copy') as HTMLElement | null,
+          intro: "Click here to copy the shortened URL to your clipboard.",
+        },
+        {
+          element: document.querySelector('.shorten-url-secure') as HTMLElement | null,
+          intro: "Add security layers to your shortened URL like passcodes and CAPTCHA.",
+        },
+        {
+          element: document.querySelector('.shorten-url-secure-passcode') as HTMLElement | null,
+          intro: "Set a passcode to secure your shortened URL.",
+        },
+        {
+          element: document.querySelector('.shorten-url-secure-captcha') as HTMLElement | null,
+          intro: "Add CAPTCHA to your shortened URL.",
+        },
+        {
+          element: document.querySelector('.shorten-url-secure-expiry') as HTMLElement | null,
+          intro: "Set an expiration date for your shortened URL.",
+        },
+        {
+          element: document.querySelector('.shorten-url-secure-accesscontrol') as HTMLElement | null,
+          intro: "Control who can access your shortened URL.",
+        },
+        {
+          element: document.querySelector('.shorten-url-reset') as HTMLElement | null,
+          intro: "Reset the shortened URL.",
+        },
+        {
+          element: document.querySelector('.shorten-url-update') as HTMLElement | null,
+          intro: "Update the shortened URL.",
+        }
       ],
     }).start();
   };
