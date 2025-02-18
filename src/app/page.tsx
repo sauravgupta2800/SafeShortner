@@ -80,7 +80,7 @@ export default function Index() {
 }
 
 const MainInput = ({ onShorten }: any) => {
-  const [inputValue, setInputValue] = useState("https://www.youtube.com/channel/UCMNkvKnD3mo3Jj9eTwJllWw/playlists");
+  const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null); // Ref for the input element
   const toast = useToast();
 
