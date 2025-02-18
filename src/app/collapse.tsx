@@ -3,11 +3,7 @@ import "./landing-page.scss";
 import Image from "next/image";
 const ct = require("countries-and-timezones");
 
-import {
-  GroupBase,
-  OptionBase,
-  Select as NewSelect,
-} from "chakra-react-select";
+import { Select as NewSelect } from "chakra-react-select";
 
 const getTimezones = () => {
   const array: any = [
@@ -80,7 +76,6 @@ import {
   Divider,
   Input,
   useToast,
-  useDisclosure,
   Collapse,
   Box,
   Checkbox,
@@ -99,9 +94,6 @@ import {
 import textcaptcha from "../../public/textcaptcha.jpg";
 import cellcaptcha from "../../public/cellcaptcha.jpg";
 import axios from "axios";
-import introJs from 'intro.js';
-import 'intro.js/introjs.css';
-import { Walkthrough } from './page';
 
 export default function CollapseRow({
   shortened = false,
@@ -138,7 +130,7 @@ export default function CollapseRow({
   const isOpen = openDetails;
 
   const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => setIsMounted(true), []); 
+  useEffect(() => setIsMounted(true), []);
 
   const safeShortnerURL = `https://safe-shortner.vercel.app`;
 
@@ -335,7 +327,6 @@ export default function CollapseRow({
 
   return (
     <div className="collpserow">
-      <Walkthrough />
       <div className="collpserow--head">
         <div className="collpserow--head--top">
           <div>
@@ -344,7 +335,7 @@ export default function CollapseRow({
                 {urlEdit ? (
                   <div className="flex items-center">
                     <div className="text-lg linkcolor">
-                    {`${safeShortnerURL}/link/`}
+                      {`${safeShortnerURL}/link/`}
                     </div>
                     <Input
                       value={shortName}
@@ -439,7 +430,7 @@ export default function CollapseRow({
         <div className="collpserow--body">
           <Box p="6" mt="4" bg="white" rounded="md" shadow="md">
             <CheckBoxWrapper
-              className="shorten-url-secure-passcode"
+              classWrap="shorten-url-secure-passcode"
               key="passcode"
               title="Apply Passcode"
               isChecked={checkedPasscode}
@@ -464,7 +455,7 @@ export default function CollapseRow({
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
-              className="shorten-url-secure-captcha"
+              classWrap="shorten-url-secure-captcha"
               key="captcha"
               title="Choose Captcha"
               isChecked={checkedCaptcha}
@@ -521,7 +512,7 @@ export default function CollapseRow({
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
-              className="shorten-url-secure-expiry"
+              classWrap="shorten-url-secure-expiry"
               key="expiry"
               title="Set Link Expiry"
               isChecked={checkedExpiry}
@@ -571,7 +562,7 @@ export default function CollapseRow({
             <Divider className="my-4" colorScheme="blue" />
 
             <CheckBoxWrapper
-              className="shorten-url-secure-accesscontrol"
+              classWrap="shorten-url-secure-accesscontrol"
               key="control"
               title="Access Control"
               isChecked={checkedControl}
@@ -630,9 +621,10 @@ const CheckBoxWrapper = ({
   isChecked = false,
   onChange,
   children,
+  classWrap = "",
 }: any) => {
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${classWrap}`}>
       <Checkbox
         isChecked={isChecked}
         size="lg"

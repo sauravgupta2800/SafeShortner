@@ -7,8 +7,8 @@ import { StarIcon, ArrowRightIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { experiences } from "./config";
 import CollapseRow from "./collapse";
 import { useDisclosure } from "@chakra-ui/react";
-import introJs from 'intro.js';
-import 'intro.js/introjs.css';
+import introJs from "intro.js";
+import "intro.js/introjs.css";
 
 export default function Index() {
   const [data, setData] = useState({});
@@ -194,52 +194,73 @@ const ReviewCard = ({ info = {} }) => {
   );
 };
 
-
-export const Walkthrough = () => { 
+const Walkthrough = () => {
   const startIntro = () => {
-    introJs().setOptions({
-      steps: [
-        {
-          intro: "Welcome to SafeShortner! Lets take a quick tour. SafeShortner is a powerful tool that goes beyond URL shortening. Share confidently, knowing your content is safeguarded",
-        },
-        {
-          element: document.querySelector('.shortnen-link') as HTMLElement | null,
-          intro: "Enter the URL you want to shorten here.",
-        },
-        {
-          element: document.querySelector('.shorten-url-copy') as HTMLElement | null,
-          intro: "Click here to copy the shortened URL to your clipboard.",
-        },
-        {
-          element: document.querySelector('.shorten-url-secure') as HTMLElement | null,
-          intro: "Add security layers to your shortened URL like passcodes and CAPTCHA.",
-        },
-        {
-          element: document.querySelector('.shorten-url-secure-passcode') as HTMLElement | null,
-          intro: "Set a passcode to secure your shortened URL.",
-        },
-        {
-          element: document.querySelector('.shorten-url-secure-captcha') as HTMLElement | null,
-          intro: "Add CAPTCHA to your shortened URL.",
-        },
-        {
-          element: document.querySelector('.shorten-url-secure-expiry') as HTMLElement | null,
-          intro: "Set an expiration date for your shortened URL.",
-        },
-        {
-          element: document.querySelector('.shorten-url-secure-accesscontrol') as HTMLElement | null,
-          intro: "Control who can access your shortened URL.",
-        },
-        {
-          element: document.querySelector('.shorten-url-reset') as HTMLElement | null,
-          intro: "Reset the shortened URL.",
-        },
-        {
-          element: document.querySelector('.shorten-url-update') as HTMLElement | null,
-          intro: "Update the shortened URL.",
-        }
-      ],
-    }).start();
+    introJs()
+      .setOptions({
+        steps: [
+          {
+            intro:
+              "Welcome to SafeShortner! Lets take a quick tour. SafeShortner is a powerful tool that goes beyond URL shortening. Share confidently, knowing your content is safeguarded",
+          },
+          {
+            element: document.querySelector(
+              ".shortnen-link"
+            ) as HTMLElement | null,
+            intro: "Enter the URL you want to shorten here.",
+          },
+          {
+            element: document.querySelector(
+              ".shorten-url-copy"
+            ) as HTMLElement | null,
+            intro: "Click here to copy the shortened URL to your clipboard.",
+          },
+          {
+            element: document.querySelector(
+              ".shorten-url-secure"
+            ) as HTMLElement | null,
+            intro:
+              "Add security layers to your shortened URL like passcodes and CAPTCHA.",
+          },
+          {
+            element: document.querySelector(
+              ".shorten-url-secure-passcode"
+            ) as HTMLElement | null,
+            intro: "Set a passcode to secure your shortened URL.",
+          },
+          {
+            element: document.querySelector(
+              ".shorten-url-secure-captcha"
+            ) as HTMLElement | null,
+            intro: "Add CAPTCHA to your shortened URL.",
+          },
+          {
+            element: document.querySelector(
+              ".shorten-url-secure-expiry"
+            ) as HTMLElement | null,
+            intro: "Set an expiration date for your shortened URL.",
+          },
+          {
+            element: document.querySelector(
+              ".shorten-url-secure-accesscontrol"
+            ) as HTMLElement | null,
+            intro: "Control who can access your shortened URL.",
+          },
+          {
+            element: document.querySelector(
+              ".shorten-url-reset"
+            ) as HTMLElement | null,
+            intro: "Reset the shortened URL.",
+          },
+          {
+            element: document.querySelector(
+              ".shorten-url-update"
+            ) as HTMLElement | null,
+            intro: "Update the shortened URL.",
+          },
+        ],
+      })
+      .start();
   };
 
   return (
@@ -249,7 +270,7 @@ export const Walkthrough = () => {
         size="md"
         background="#1d85ac"
         onClick={() => startIntro()}
-        style={{ top: "10px", right: "10px", position: "absolute",  }}  
+        style={{ top: "10px", right: "10px", position: "absolute" }}
       >
         Walkthrough
       </Button>
