@@ -9,7 +9,9 @@ import CollapseRow from "./collapse";
 import { useDisclosure } from "@chakra-ui/react";
 export default function Index() {
   const [data, setData] = useState({});
-  const { isOpen: openDetails, onToggle } = useDisclosure({ isOpen: true });
+  const { isOpen: openDetails, onToggle } = useDisclosure({
+    defaultIsOpen: true,
+  });
   const [shortened, setShortened] = useState(false);
 
   const setDataState = (key: string, value: any) => {
@@ -22,7 +24,6 @@ export default function Index() {
   };
 
   const onShorten = async (url: string) => {
-    console.log("CLIEKED", url);
     try {
       const response = await axios.post("/api/shorten", { originalUrl: url });
       console.log("Short URL created:", response.data);
@@ -34,7 +35,6 @@ export default function Index() {
   };
 
   useEffect(() => {
-    console.log("API CALL :)");
     const fetchPosts = async () => {
       try {
         const response = await axios.get("/api/shorten");

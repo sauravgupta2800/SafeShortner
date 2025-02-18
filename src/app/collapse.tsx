@@ -178,7 +178,10 @@ export default function CollapseRow({
   };
 
   const handleUpdate = async () => {
-    if (!shortened) return;
+    if (!shortened) {
+      showToast("Error", "No URL data to update", "warning");
+      return;
+    }
 
     const payload = {
       id: data.id,
@@ -260,7 +263,10 @@ export default function CollapseRow({
   };
 
   const handleReset = async () => {
-    if (!shortened) return;
+    if (!shortened) {
+      showToast("Error", "No URL data to reset", "warning");
+      return;
+    }
 
     setCheckedPasscode(false);
     setPasscode("");
@@ -310,6 +316,10 @@ export default function CollapseRow({
       setExpireTime("");
     }
     setCheckedExpiry(value);
+  };
+
+  const onCopy = (url: string) => {
+    // Copy to clipboard
   };
 
   return (
@@ -388,7 +398,7 @@ export default function CollapseRow({
               size="md"
               rightIcon={<CopyIcon />}
               background="#1d85ac"
-              onClick={() => {}}
+              onClick={() => onCopy(urlWithShortPath)}
             >
               Copy
             </Button>
